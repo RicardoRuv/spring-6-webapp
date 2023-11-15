@@ -6,10 +6,12 @@ import guru.springframework.spring6webapp.domain.Publisher;
 import guru.springframework.spring6webapp.repositories.AuthorRepository;
 import guru.springframework.spring6webapp.repositories.BookRepository;
 import guru.springframework.spring6webapp.repositories.PublisherRepository;
-import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/**
+ * Created by jt, Spring Framework Guru.
+ */
 @Component
 public class BootstrapData implements CommandLineRunner {
 
@@ -17,64 +19,62 @@ public class BootstrapData implements CommandLineRunner {
     private final BookRepository bookRepository;
     private final PublisherRepository publisherRepository;
 
-    public BootstrapData(AuthorRepository authorRepository, BookRepository bookRepository, PublisherRepository publisherRepository){
+    public BootstrapData(AuthorRepository authorRepository, BookRepository bookRepository,
+                         PublisherRepository publisherRepository) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
         this.publisherRepository = publisherRepository;
-
     }
 
     @Override
     public void run(String... args) throws Exception {
-
         Author eric = new Author();
         eric.setFirstName("Eric");
         eric.setLastName("Evans");
 
         Book ddd = new Book();
-        ddd.setIsbn("123456");
         ddd.setTitle("Domain Driven Design");
-
-        Author ricardo = new Author();
-        ricardo.setFirstName("Ricardo");
-        ricardo.setLastName("Mendoza");
-
-        Book ddd2 = new Book();
-        ddd2.setIsbn("123456");
-        ddd2.setTitle("Hello world expert");
-
-        Publisher publisher = new Publisher();
-        publisher.setName("SFG Publishing");
-        publisher.setCity("St Petersburg");
-        publisher.setState("FL");
-        publisher.setZip("33701");
-        publisher.setAddress("1234 Main St");
-
-        Publisher publisherSaved = publisherRepository.save(publisher);
-
+        ddd.setIsbn("123456");
 
         Author ericSaved = authorRepository.save(eric);
         Book dddSaved = bookRepository.save(ddd);
 
-        Author ricardoSaved = authorRepository.save(ricardo);
-        Book ddd2Saved = bookRepository.save(ddd2);
+        Author rod = new Author();
+        rod.setFirstName("Rod");
+        rod.setLastName("Johnson");
+
+        Book noEJB = new Book();
+        noEJB.setTitle("J2EE Development without EJB");
+        noEJB.setIsbn("54757585");
+
+        Author rodSaved = authorRepository.save(rod);
+        Book noEJBSaved = bookRepository.save(noEJB);
 
         ericSaved.getBooks().add(dddSaved);
-        ricardoSaved.getBooks().add(ddd2Saved);
+        rodSaved.getBooks().add(noEJBSaved);
+        dddSaved.getAuthors().add(ericSaved);
+        noEJBSaved.getAuthors().add(rodSaved);
+
+
+        Publisher publisher = new Publisher();
+        publisher.setName("My Publisher");
+        publisher.setAddress("123 Main");
+        Publisher savedPublisher = publisherRepository.save(publisher);
+
+        dddSaved.setPublisher(savedPublisher);
+        noEJBSaved.setPublisher(savedPublisher);
 
         authorRepository.save(ericSaved);
-        authorRepository.save(ricardoSaved);
-        publisherRepository.save(publisherSaved);
+        authorRepository.save(rodSaved);
+        bookRepository.save(dddSaved);
+        bookRepository.save(noEJBSaved);
 
-        System.out.println("Started in Bootstrap");
-        System.out.println("Number of Books: " + bookRepository.count());
-        System.out.println("Number of Authors: " + authorRepository.count());
-        System.out.println("Number of Publishers: " + publisherRepository.count());
+        System.out.println("In Bootstrap");
+        System.out.println("Author Count: " + authorRepository.count());
+        System.out.println("Book Count: " + bookRepository.count());
 
-        
+
+
+        System.out.println("Publisher Count: " + publisherRepository.count());
     }
 }
-
-
-
-
